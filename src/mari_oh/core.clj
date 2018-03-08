@@ -5,6 +5,9 @@
 (defn get-walk-image [walk-pos]
   (q/load-image (str "Walk (" walk-pos ").png")))
 
+(defn get-dead-image [dead-pos]
+  (q/load-image (str "Dead (" dead-pos ").png")))
+
 (defn setup []
   ; Set frame rate to 30 frames per second.
   (q/frame-rate 30)
@@ -14,6 +17,9 @@
   ; circle color and position.
   {:character {:walk-images (map get-walk-image (range 1 11)) 
                :walk-post 1
+               :is-walking? true
+               :dead-images (map get-dead-image (range 2 13))
+               :dead-post 1
                :x 20}})
 
 (defn update-state [state]
@@ -23,8 +29,10 @@
 (defn draw-state [state]
   (let [character (:character state)]
     (q/image (q/load-image "BG.png") 0 0)
-    (q/image (get-walk-image (:walk-post character)) (:x character) 500 100 100)
-    state))
+    (if (:is-walking? character)
+      (q/image (get-walk-image (:walk-post character)) (:x character) 500 100 100)
+      (q/image (get-dead-image (:dead-post character)) (:x character) 500 100 100))
+     state))
 
 (q/defsketch mari-oh
   :title "You spin my circle right round"
@@ -46,5 +54,23 @@
                     (update-in state
                               [:character :walk-post]
                               (fn [x] (if (= x 10) 1 (+ x 1))))
-                    (update-in [:character :x] (fn [x] (+ x 0.5))))        
+                    (update-in [:character :x] (fn [x] (+ x 0.5))))
+                   :left                                        
+                   (->
+                    (update-in state
+                              [:character :walk-post]
+                              (fn [x] (if (= x 1) 10 (- x 1))))
+                    (update-in [:character :x] (fn [x] (- x 0.5))))
+                   :up                                        
+                   (->
+                    (update-in state
+                              [:character :dead-post]
+                              (fn [x] (if (= x 2) 12 (- x 1))))
+                    (update-in [:character :is-walking?] (fn [_] false)))
+                   :down                                        
+                   (->
+                    (update-in state
+                              [:character :dead-post]
+                              (fn [x] (if (= x 12) 2 (+ x 1))))
+                    (update-in [:character :is-walking?] (fn [_] false)))
                    state)))
