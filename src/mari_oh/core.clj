@@ -15,7 +15,8 @@
   {:color 0
    :angle 0
    :character {:walk-images (map get-walk-image (range 1 11)) 
-               :walk-post 1}})
+               :walk-post 1
+               :x 20}})
 
 (defn update-state [state]
   ; Update sketch state by changing circle color and position.
@@ -24,12 +25,12 @@
 (defn draw-state [state]
   (let [character (:character state)]
     (q/background 240)
-    (q/image (get-walk-image (:walk-post character)) 20 200 100 100)
+    (q/image (get-walk-image (:walk-post character)) (:x character) 200 100 100)
     state))
 
 (q/defsketch mari-oh
   :title "You spin my circle right round"
-  :size [500 500]
+  :size [800 500]
   ; setup function called only once, during sketch initialization.
   :setup setup
   ; update-state is called on each iteration before draw-state.
@@ -43,9 +44,10 @@
   :key-pressed (fn [state {:keys [key key-code]}]
                  (case key
                    :right
-                   (update-in state
+                   (->
+                    (update-in state
                               [:character :walk-post]
                               (fn [x] (if (= x 10) 1 (+ x 1))))
-                   state)
-
-                 ))
+                    (update-in [:character :x] (fn [x] (inc x))))
+                   
+                   state)))
