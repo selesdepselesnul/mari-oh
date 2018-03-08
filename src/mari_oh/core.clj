@@ -12,9 +12,7 @@
   (q/color-mode :hsb)
   ; setup function returns initial state. It contains
   ; circle color and position.
-  {:color 0
-   :angle 0
-   :character {:walk-images (map get-walk-image (range 1 11)) 
+  {:character {:walk-images (map get-walk-image (range 1 11)) 
                :walk-post 1
                :x 20}})
 
@@ -24,13 +22,13 @@
 
 (defn draw-state [state]
   (let [character (:character state)]
-    (q/background 240)
-    (q/image (get-walk-image (:walk-post character)) (:x character) 200 100 100)
+    (q/image (q/load-image "BG.png") 0 0)
+    (q/image (get-walk-image (:walk-post character)) (:x character) 500 100 100)
     state))
 
 (q/defsketch mari-oh
   :title "You spin my circle right round"
-  :size [800 500]
+  :size [800 600]
   ; setup function called only once, during sketch initialization.
   :setup setup
   ; update-state is called on each iteration before draw-state.
