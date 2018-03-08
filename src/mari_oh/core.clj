@@ -39,4 +39,13 @@
   ; This sketch uses functional-mode middleware.
   ; Check quil wiki for more info about middlewares and particularly
   ; fun-mode.
-  :middleware [m/fun-mode])
+  :middleware [m/fun-mode]
+  :key-pressed (fn [state {:keys [key key-code]}]
+                 (case key
+                   :right
+                   (update-in state
+                              [:character :walk-post]
+                              (fn [x] (if (= x 10) 1 (+ x 1))))
+                   state)
+
+                 ))
