@@ -46,6 +46,5 @@
                     (update-in state
                               [:character :walk-post]
                               (fn [x] (if (= x 10) 1 (+ x 1))))
-                    (update-in [:character :x] (fn [x] (inc x))))
-                   
+                    (update-in [:character :x] (fn [x] (+ x 0.5))))        
                    state)))
